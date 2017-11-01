@@ -2,12 +2,35 @@ module.exports = {
     getCars : function(page, count, callback){
         const url       = '/catalog/get_cars/page/' + page +'/count/' + count;
         const options   = createGetOptions('127.0.0.1', 3004, url, null);
-        createAndSendHttpRequest(options, url, null, callback);
+        createAndSendHttpRequest(options, url, null, function(err, status, response){
+            if (err)
+                callback(err, status, response);
+            else {
+                if (response){
+                    const parseObject   = JSON.parse(response);
+                    const carsArray     = Array.from(parseObject);
+                    callback(err, status, carsArray);
+                } else {
+                    callback(err, status , null);
+                }
+            }
+        });
     },
     getCar : function(id, callback){
         const url       = '/catalog/get_car/' + id;
         const options   = createGetOptions('127.0.0.1', 3004, url, null);
-        createAndSendHttpRequest(options, url, null, callback);
+        createAndSendHttpRequest(options, url, null, function(err, status, response){
+            if(err)       
+                callback(err, status, response);
+            else {
+                if (response){
+                    const object = JSON.parse(response);
+                    callback(err, status, object);
+                } else {
+                    callback(err, status, null);
+                }
+            }
+        });
     }
 }
 
