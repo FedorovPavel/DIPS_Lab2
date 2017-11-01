@@ -7,6 +7,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch via NPM coverage",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run test:coverage"
+            ],
+            "port": 3000
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Mocha Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
