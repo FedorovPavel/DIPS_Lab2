@@ -31,9 +31,12 @@ router.get('/get_car/:id', function(req, res, next){
     res.status(400).send('Bad request');
   } else {
     catalog.getCar(id, function(err, result){
-      if (err)
-        return next(err);
-      else {
+      if (err) {
+        if (err.kind == "ObjectID")
+          res.status(400).send({status:'Error', message : 'Invalid ID'});
+        else 
+          res.status(400).send({status:'Error', message : 'Not found'});
+      } else {
         res.status(200).send(result);
       }
     });
