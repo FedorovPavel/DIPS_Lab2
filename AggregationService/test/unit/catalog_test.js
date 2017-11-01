@@ -12,11 +12,36 @@ describe('Unit test with CatalogService', function(){
         describe('Good request', function(){
             it('Good request /catalog/cars/*/*', function(done){
                 chai.request(server)
-                .get('/catalog/get_cars/page/0/count/20')
+                .get('/catalog/cars/0/20')
                 .end(function(err, res) {
                     res.should.have.status(200);
                     res.body.should.be.a('array');
                     res.body.length.should.be.eql(20);
+                    done();
+                });
+            });
+        });
+        describe('Bad request, without page parametr', function(done){
+            it('Bad request /catalog/cars//* without page', function(done){
+                chai.request(server)
+                .get('/catalog/cars//20')
+                .end(function(err, res) {
+                    res.should.have.status(404);
+                    res.body.should.be.a('object');
+                    done();
+                });
+            });
+        });
+    });
+
+    describe('Get car by ID', function(){
+        describe('Good request', function(){
+            it('Good request /catalog/car/*', function(done){
+                chai.request(server)
+                .get('/catalog/car/59f634f54929021fa8251633')
+                .end(function(err, res) {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
                     done();
                 });
             });
