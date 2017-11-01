@@ -21,13 +21,36 @@ describe('Unit test with CatalogService', function(){
                 });
             });
         });
-        describe('Bad request, without page parametr', function(done){
+        describe('Bad request, without page parametr', function(){
             it('Bad request /catalog/cars//* without page', function(done){
                 chai.request(server)
                 .get('/catalog/cars//20')
                 .end(function(err, res) {
                     res.should.have.status(404);
                     res.body.should.be.a('object');
+                    done();
+                });
+            });
+        });
+        describe('Bad request, without count parametr', function(){
+            it('Bad request /catalog/cars/*/ without count', function(done){
+                chai.request(server)
+                .get('/catalog/cars/0/')
+                .end(function(err, res) {
+                    res.should.have.status(404);
+                    res.body.should.be.a('object');
+                    done();
+                });
+            });
+        });
+        describe('Bad request, with bad page parametr', function(){
+            it('Bad request /catalog/cars/:badParam:/*', function(done){
+                chai.request(server)
+                .get('/catalog/cars/cdasd/20')
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.type.should.to.be.a('string');
+                    res.text.should.eql('Bad request');
                     done();
                 });
             });
