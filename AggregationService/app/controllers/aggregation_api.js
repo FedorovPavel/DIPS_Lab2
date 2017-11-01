@@ -17,7 +17,7 @@ router.get('/catalog/cars/:page/:count', function(req, res, next){
   const page  = parseInt(req.params.page);
   const count = parseInt(req.params.count);
   if(page < 0 || isNaN(page) || count < 0 || isNaN(count)){
-    res.send('Bad request');
+    res.status(400).send('Bad request');
   } else {
     bus.getCars(page, count, function(err, statusCode, responseText){
       if (err)
