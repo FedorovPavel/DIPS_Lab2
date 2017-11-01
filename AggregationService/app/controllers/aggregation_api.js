@@ -33,7 +33,7 @@ router.get('/catalog/cars/:page/:count', function(req, res, next){
 router.get('/catalog/car/:id', function(req, res, next){
   const id = req.params.id;
   if (id.length == 0 || typeof(id) == 'undefined' || !id){
-    res.send('Bad request');
+    res.status(400).send('Bad request');
   } else {
     bus.getCar(id, function(err, statusCode, responseText){
       if (err)
