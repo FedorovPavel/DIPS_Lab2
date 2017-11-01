@@ -8,7 +8,7 @@ var config = {
     app: {
       name: 'catalogservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3004,
     db: 'mongodb://localhost/catalogservice-development'
   },
 
@@ -17,7 +17,7 @@ var config = {
     app: {
       name: 'catalogservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3004,
     db: 'mongodb://localhost/catalogservice-test'
   },
 
@@ -26,7 +26,7 @@ var config = {
     app: {
       name: 'catalogservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3004,
     db: 'mongodb://localhost/catalogservice-production'
   }
 };
