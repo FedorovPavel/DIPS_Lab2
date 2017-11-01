@@ -27,23 +27,5 @@ describe('api cars controller', function(){
         });
     });
 
-    // describe('Create new car with full needed information with post request', function(){
-    //     it('Post /car - create car', function(done){
-    //         let car = {
-    //             man : 'Nissan',
-    //             mod : 'X-Trail',
-    //             col : 'black'
-    //         }
-    //         chai.request(server)
-    //             .post('/car')
-    //             .send(car)
-    //             .end(function(err, res){
-    //                 res.should.have.status(200);
-    //                 res.body.should.be.a('object');
-    //                 res.body.manufacturer.should.be.eql('Nissan');
-    //                 res.body.model.should.be.eql('X-Trail');
-    //                 done();
-    //             });
-    //     });
-    // });
+    
 });
