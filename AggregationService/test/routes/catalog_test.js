@@ -55,6 +55,18 @@ describe('Unit test with CatalogService', function(){
                 });
             });
         });
+        describe('Bad request, with bad count parametr', function(){
+            it('Bad request /catalog/cars/*/:badParam:', function(done){
+                chai.request(server)
+                .get('/catalog/cars/0/asdhasd')
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.type.should.to.be.a('string');
+                    res.text.should.eql('Bad request');
+                    done();
+                });
+            });
+        });
     });
 
     describe('Get car by ID', function(){
@@ -65,6 +77,29 @@ describe('Unit test with CatalogService', function(){
                 .end(function(err, res) {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
+                    done();
+                });
+            });
+        });
+        describe('Bad request without id', function(){
+            it('Bad request /catalog/car/', function(done){
+                chai.request(server)
+                .get('/catalog/car/')
+                .end(function(err, res) {
+                    res.should.have.status(404);
+                    res.body.should.be.a('object');
+                    done();
+                });
+            });
+        });
+        describe('Bad request: bad id', function(){
+            it('Bad request /catalog/car/:badID:', function(done){
+                chai.request(server)
+                .get('/catalog/car/asdsdg')
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.body.should.be.a('object');
+                    res.body.status.should.eql('Error');
                     done();
                 });
             });
