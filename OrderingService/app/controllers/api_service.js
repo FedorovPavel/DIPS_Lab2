@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const mongoose = require('mongoose');
-const Article = mongoose.model('Article');
+const express = require('express'),
+      router = express.Router(),
+      mongoose = require('mongoose'),
+      orders = mongoose.model('Order');
 
 module.exports = (app) => {
   app.use('/', router);
