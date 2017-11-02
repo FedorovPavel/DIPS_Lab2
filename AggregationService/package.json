@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "mocha --recursive test",
-    "test:coverage": "nyc npm test",
+    "test:coverage": "nyc --reporter=html npm test",
     "test:unit": "mocha --recursive test/middleware test/models test/routes",
     "test:integration": "mocha --recursive test/integration"
   },
