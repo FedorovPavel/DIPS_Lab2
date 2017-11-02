@@ -1,16 +1,19 @@
-// Example model
+const mongoose  = require('mongoose'),
+      Schema    = mongoose.Schema;
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-
-const ArticleSchema = new Schema({
-  title: String,
-  url: String,
-  text: String
+const OrderSchema = new Schema({
+  UserID      : ObjectID,
+  CarID       : ObjectID,
+  BillingID   : ObjectID,
+  Lease       : {
+    StartDate : Date,
+    EndDate   : Date
+  },
+  DateOfIssue : Date
 });
 
-ArticleSchema.virtual('date')
+OrderSchema.virtual('date')
   .get(() => this._id.getTimestamp());
 
-mongoose.model('Article', ArticleSchema);
+mongoose.model('Order', OrderSchema);
 
