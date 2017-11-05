@@ -2,9 +2,9 @@ const mongoose  = require('mongoose'),
       Schema    = mongoose.Schema;
 
 const OrderSchema = new Schema({
-  UserID      : ObjectID,
-  CarID       : ObjectID,
-  BillingID   : ObjectID,
+  UserID      : Schema.Types.ObjectId,
+  CarID       : Schema.Types.ObjectId,
+  BillingID   : Schema.Types.ObjectId,
   Lease       : {
     StartDate : Date,
     EndDate   : Date
@@ -32,9 +32,9 @@ OrderSchema.statics.getOrder = function(id, callback){
 };
 
 OrderSchema.statics.createOrder = function(objectInfo, callback){
-  const requiredField = ['UserID','CarID'];
   let object = Object(objectInfo);
-  if (object.keys in requiredField){
+  const check = checkRequiredFields(Object.keys(object));
+  if (check){
     let order = createOrder(object);
     if (order){
       order.save(function(err, result){
@@ -48,11 +48,14 @@ OrderSchema.statics.createOrder = function(objectInfo, callback){
     } else {
       return callback('Unknown fields', null);
     }
+  } else {
+    return callback('not found required fields', null);
   }
 }
 
 function createOrder(object){
-  let item = new this.model();
+  const model = mongoose.model('Order');
+  let item = new model();
   let errorParse = false;
   for (key in object){
     switch (key) {
@@ -62,14 +65,11 @@ function createOrder(object){
       case 'CarID'  :
         item.CarID  = mongoose.Types.ObjectId(object[key]);
         break;
-      case 'BillingID' :
-        item.BillingID = mongoose.Types.ObjectId(object[key]);
-        break;
       case 'StartDate' :
-        item.Lease.StartDate = Date(object[key]);
+        item.Lease.StartDate = new Date(object[key]);
         break;
       case 'EndDate' :
-        item.Lease.EndDate = Date(object[key]);
+        item.Lease.EndDate = new Date(object[key]);
         break;
       default :
         errorParse = true;
@@ -89,12 +89,29 @@ function getOrder(record){
     UserID      : record.UserID,
     CarID       : record.CarID,
     BillingID   : record.BillingID,
-    Lease       : record.Lease,
+    Lease       : {
+      StartDate : record.Lease.StartDate,
+      EndDate   : record.Lease.EndDate
+    },
     DateOfIssue : record.DateOfIssue,
     Status      : record.Status
   };
   return item;
 }
 
-mongoose.model('Order', OrderSchema);
+function checkRequiredFields(objectKeys){
+  const keys = Array.from(objectKeys);
+  const requiredField = ['UserID','CarID', 'StartDate', 'EndDate'];
+  let flag = 0;
+  for(let I = 0; I < keys.length; I++ ){
+    if (requiredField.indexOf(keys[I]) != -1)
+      flag++;
+  }
+  if (flag == requiredField.length) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
+mongoose.model('Order', OrderSchema);
