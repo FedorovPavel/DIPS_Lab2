@@ -136,8 +136,8 @@ router.put('/createOrder', function(req, res, next){
   let item = {
     UserID    : req.body.userID,
     CarID     : req.body.carID,
-    StartDate : validator.ConvertStringToDate(req.body.startDate).toString(),
-    EndDate   : validator.ConvertStringToDate(req.body.endDate).toString()
+    StartDate : validator.ConvertStringToDate(req.body.startDate),
+    EndDate   : validator.ConvertStringToDate(req.body.endDate)
   };
   if (!item.UserID  || typeof(item.UserID) == 'undefined' || item.UserID.length == 0 ||
       !item.CarID   || typeof(item.CarID) == 'undefined'  || item.CarID.length == 0 ||
