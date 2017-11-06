@@ -9,8 +9,17 @@ var chai        = require('chai'),
 
 chai.use(chaiHttp);
 
-describe('test', function(){
-    it('test', function(done){
-        done();
+describe('Get orders GET /orders/:id/page/:page/count/:count', function(){
+    describe('Good request', function(){
+        it ('Good requset', function(done){
+            chai.request(server)
+            .get('/orders/getOrders/59f634f54929021fa8251644/page/0/count/5')
+            .end(function(err, res) {
+                res.should.have.status(200);
+                res.body.should.be.a('array');
+                res.body.length.should.be.eql(5);
+                done();
+            });
+        });
     });
 });
