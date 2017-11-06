@@ -8,7 +8,7 @@ const config = {
     app: {
       name: 'billingservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3003,
     db: 'mongodb://localhost/billingservice-development'
   },
 
@@ -17,7 +17,7 @@ const config = {
     app: {
       name: 'billingservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3003,
     db: 'mongodb://localhost/billingservice-test'
   },
 
@@ -26,7 +26,7 @@ const config = {
     app: {
       name: 'billingservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3003,
     db: 'mongodb://localhost/billingservice-production'
   }
 };
