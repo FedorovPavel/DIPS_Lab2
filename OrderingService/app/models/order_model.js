@@ -16,10 +16,11 @@ const OrderSchema = new Schema({
 OrderSchema.virtual('date')
   .get(() => this._id.getTimestamp());
 
-OrderSchema.statics.getOrders = function(user_id, callback){
-  if (user_id.length == 0 || !user_id || typeof(user_id) == 'undefined'){
-    const userID = Schema.Types.ObjectId(user_id);
-    this.find({UserID : userID}, function(err, orders){
+OrderSchema.statics.getOrders = function(user_id, page, count, callback){
+  if (user_id.length  == 0  || !user_id || typeof(user_id)  == 'undefined' ||
+      page.length     == 0  || !page    || typeof(page)     == 'undefined' ||
+      count.length    == 0  || !count   || typeof(count)    == 'undefined'){
+    this.find({'UserID' : user_id}, function(err, orders){
       if (err)
         return callback(err, null);
       else {
@@ -34,7 +35,7 @@ OrderSchema.statics.getOrders = function(user_id, callback){
           return callback(null, null);
         }
       }
-    }); 
+    }).skip(page*count).limit(count); 
   } else {
     return callback('user ID is undefined', null);
   }
