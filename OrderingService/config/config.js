@@ -1,6 +1,6 @@
-const path = require('path');
-const rootPath = path.normalize(__dirname + '/..');
-const env = process.env.NODE_ENV || 'development';
+var path = require('path'),
+    rootPath = path.normalize(__dirname + '/..');
+    env = process.env.NODE_ENV || 'development';
 
 const config = {
   development: {
@@ -8,7 +8,7 @@ const config = {
     app: {
       name: 'orderingservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3002,
     db: 'mongodb://localhost/orderingservice-development'
   },
 
@@ -17,7 +17,7 @@ const config = {
     app: {
       name: 'orderingservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3002,
     db: 'mongodb://localhost/orderingservice-test'
   },
 
@@ -26,7 +26,7 @@ const config = {
     app: {
       name: 'orderingservice'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3002,
     db: 'mongodb://localhost/orderingservice-production'
   }
 };
