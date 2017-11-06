@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "NODE_ENV=test mocha --recursive test",
-    "test:coverage": "nyc npm test",
-    "test:unit": "mocha --recursive test/middleware test/models test/routes",
+    "test": "mocha --recursive test",
+    "test:coverage": "nyc --reporter=html mocha --recursive test",
+    "test:unit": "mocha --recursive test/routes",
     "test:integration": "mocha --recursive test/integration"
   },
   "dependencies": {
