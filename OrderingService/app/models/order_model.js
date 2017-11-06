@@ -16,6 +16,30 @@ const OrderSchema = new Schema({
 OrderSchema.virtual('date')
   .get(() => this._id.getTimestamp());
 
+OrderSchema.statics.getOrders = function(user_id, callback){
+  if (user_id.length == 0 || !user_id || typeof(user_id) == 'undefined'){
+    const userID = Schema.Types.ObjectId(user_id);
+    this.find({UserID : userID}, function(err, orders){
+      if (err)
+        return callback(err, null);
+      else {
+        if (orders) {
+          let result = [];
+          for (let I = 0; I < orders.length; I++){
+            let item = getOrder(orders[I]);
+            result[I] = item;
+          }
+          return callback(null, result);
+        } else {
+          return callback(null, null);
+        }
+      }
+    }); 
+  } else {
+    return callback('user ID is undefined', null);
+  }
+};
+
 OrderSchema.statics.getOrder = function(id, callback){
   this.findByID(id, function(err, result){
     if (err)
@@ -52,6 +76,93 @@ OrderSchema.statics.createOrder = function(objectInfo, callback){
     return callback('not found required fields', null);
   }
 }
+
+OrderSchema.statics.setWaitStatus = function(id, callback){
+  if (!id || id.length == 0 || typeof(id) == 'undefined'){
+    const _id = Schema.Types.ObjectId(id);
+    this.findByID(_id, function(err, order){
+      if (err)
+        return callback(err, null);
+      else {
+        if (order){
+          if (order.Status == 'Draft'){
+            order.Status = 'WaitForBilling';
+            order.save(function(err, res){
+              if (err)
+                return callback(err, null);
+              else 
+                callback(null, res);
+            });
+          } else {
+            return callback("Status don't right", null);
+          }
+        } else { 
+          return callback(null, null);
+        }
+      }
+    });
+  } else {
+    return callback('ID is undefined', null);
+  }
+};
+
+OrderSchema.statics.setPaidStatus = function(id, callback){
+  if (!id || id.length == 0 || typeof(id) == 'undefined'){
+    const _id = Schema.Types.ObjectId(id);
+    this.findByID(_id, function(err, order){
+      if (err)
+        return callback(err, null);
+      else {
+        if (order){
+          if (order.Status == 'WaitForBilling'){
+            order.Status = 'Paid';
+            order.save(function(err, res){
+              if (err)
+                return callback(err, null);
+              else 
+                callback(null, res);
+            });
+          } else {
+            return callback("Status don't right", null);
+          }
+        } else { 
+          return callback(null, null);
+        }
+      }
+    });
+  } else {
+    return callback('ID is undefined', null);
+  }
+};
+
+OrderSchema.statics.setCompletedStatus = function(id, callback){
+  if (!id || id.length == 0 || typeof(id) == 'undefined'){
+    const _id = Schema.Types.ObjectId(id);
+    this.findByID(_id, function(err, order){
+      if (err)
+        return callback(err, null);
+      else {
+        if (order){
+          if (order.Status == 'Paid'){
+            order.Status = 'Completed';
+            order.save(function(err, res){
+              if (err)
+                return callback(err, null);
+              else 
+                callback(null, res);
+            });
+          } else {
+            return callback("Status don't right", null);
+          }
+        } else { 
+          return callback(null, null);
+        }
+      }
+    });
+  } else {
+    return callback('ID is undefined', null);
+  }
+};
 
 function createOrder(object){
   const model = mongoose.model('Order');
