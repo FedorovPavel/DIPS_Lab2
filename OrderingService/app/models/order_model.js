@@ -18,8 +18,10 @@ OrderSchema.virtual('date')
 
 OrderSchema.statics.getOrders = function(user_id, page, count, callback){
   if (user_id.length  == 0  || !user_id || typeof(user_id)  == 'undefined' ||
-      page.length     == 0  || !page    || typeof(page)     == 'undefined' ||
-      count.length    == 0  || !count   || typeof(count)    == 'undefined'){
+      page < 0  || typeof(page)     == 'undefined' ||
+      count <= 0  || typeof(count)    == 'undefined'){
+      return callback('user ID is undefined', null);
+  } else {
     this.find({'UserID' : user_id}, function(err, orders){
       if (err)
         return callback(err, null);
@@ -36,13 +38,11 @@ OrderSchema.statics.getOrders = function(user_id, page, count, callback){
         }
       }
     }).skip(page*count).limit(count); 
-  } else {
-    return callback('user ID is undefined', null);
   }
 };
 
 OrderSchema.statics.getOrder = function(id, callback){
-  this.findByID(id, function(err, result){
+  this.findById(id, function(err, result){
     if (err)
       return callback(err, null);
     else {
@@ -80,8 +80,9 @@ OrderSchema.statics.createOrder = function(objectInfo, callback){
 
 OrderSchema.statics.setWaitStatus = function(id, callback){
   if (!id || id.length == 0 || typeof(id) == 'undefined'){
-    const _id = Schema.Types.ObjectId(id);
-    this.findByID(_id, function(err, order){
+    return callback('ID is undefined', null);
+  } else {
+    this.findById(id, function(err, order){
       if (err)
         return callback(err, null);
       else {
@@ -102,15 +103,14 @@ OrderSchema.statics.setWaitStatus = function(id, callback){
         }
       }
     });
-  } else {
-    return callback('ID is undefined', null);
   }
 };
 
 OrderSchema.statics.setPaidStatus = function(id, callback){
   if (!id || id.length == 0 || typeof(id) == 'undefined'){
-    const _id = Schema.Types.ObjectId(id);
-    this.findByID(_id, function(err, order){
+    return callback('ID is undefined', null);
+  } else {
+    this.findById(id, function(err, order){
       if (err)
         return callback(err, null);
       else {
@@ -131,15 +131,14 @@ OrderSchema.statics.setPaidStatus = function(id, callback){
         }
       }
     });
-  } else {
-    return callback('ID is undefined', null);
   }
 };
 
 OrderSchema.statics.setCompletedStatus = function(id, callback){
   if (!id || id.length == 0 || typeof(id) == 'undefined'){
-    const _id = Schema.Types.ObjectId(id);
-    this.findByID(_id, function(err, order){
+    return callback('ID is undefined', null);
+  } else {
+    this.findById(id, function(err, order){
       if (err)
         return callback(err, null);
       else {
@@ -160,8 +159,6 @@ OrderSchema.statics.setCompletedStatus = function(id, callback){
         }
       }
     });
-  } else {
-    return callback('ID is undefined', null);
   }
 };
 
