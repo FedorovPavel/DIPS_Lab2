@@ -14,13 +14,19 @@ router.get('/getOrders/:id/page/:page/count/:count', function(req, res, next){
   const page  = parseInt(req.params.page);
   const count = parseInt(req.params.count);
   if (!id || typeof(id) == 'undefined' || id.length == 0 ||
-      typeof(page) == 'undefined' || page < 0 ||
-      typeof(count) == 'undefined' || count <= 0){
+      typeof(page) == 'undefined' || isNaN(page)||  page < 0 ||
+      typeof(count) == 'undefined' || isNaN(count)|| count <= 0){
     res.status(400).send('Bad request');
   } else {
     orders.getOrders(id, page, count, function(err, orders){
-      if (err) 
-        return next(err);
+      if (err) {
+        if (err.kind == 'ObjectId')
+          res.status(400).send('Bad ID');
+        else if (err == 'user ID is undefined')
+          res.status(400).send('Bad request');
+        else 
+          return next(err);
+      }
       else {
         if (orders) {
           let result = [];
@@ -54,9 +60,12 @@ router.get('/getOrder/:id', function(req, res, next) {
     res.status(400).send('Bad request');
   } else {
     orders.getOrder(id, function(err, order){
-      if (err)
-        return next(err);
-      else {
+      if (err) {
+        if (err.kind == 'ObjectId')
+          res.status(400).send('Bad ID');
+        else 
+          return next(err);
+      } else {
         if (order){
           coordinator.getCar(order.CarID, function(err ,code , response){
             delete order.CarID;
@@ -82,7 +91,14 @@ router.post('/:id/confirm_order', function(req, res, next){
   } else {
     orders.setWaitStatus(id, function(err, result){
       if (err)
-        return next (err);
+      {
+        if (err.kind == "ObjectId")
+          res.status(400).send('Bad ID');
+        else if (err == "Status don't right")
+          res.status(400).send(err)
+        else 
+          return next (err);
+      }
       else {
         if (result) {
           res.status(200).send('Change status succesfully');
@@ -100,9 +116,14 @@ router.post('/:id/order_paid', function(req, res, next){
     res.status(400).send('Bad request');
   } else {
     orders.setPaidStatus(id, function(err, result){
-      if (err)
-        return next (err);
-      else {
+      if (err){
+        if (err.kind == "ObjectId")
+          res.status(400).send('Bad ID');
+        else if (err == "Status don't right")
+          res.status(400).send(err)
+        else 
+          return next (err);
+      } else {
         if (result) {
           res.status(200).send('Change status succesfully');
         } else {
@@ -119,9 +140,14 @@ router.post('/:id/completed_order', function(req, res, next){
     res.status(400).send('Bad request');
   } else {
     orders.setCompletedStatus(id, function(err, result){
-      if (err)
-        return next (err);
-      else {
+      if (err) {
+        if (err.kind == "ObjectId")
+          res.status(400).send('Bad ID');
+        else if (err == "Status don't right")
+          res.status(400).send(err)
+        else 
+          return next (err);
+      } else {
         if (result) {
           res.status(200).send('Change status succesfully');
         } else {
