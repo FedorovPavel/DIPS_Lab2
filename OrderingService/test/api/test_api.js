@@ -128,4 +128,138 @@ describe('Order-api controller', function(){
             });
         });
     });
+    describe('Confirm order POST /:id/confirm_order', function(){
+        describe('Good request', function(){
+            const orderID = "5a0073d3fb218c1ff070b638";
+            it('Good request', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/confirm_order')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(200);
+                    res.type.should.be.a('string');
+                    res.text.should.eql('Change status succesfully');
+                    done();
+                });
+            });
+        });
+        describe('Bad request - bad id', function(){
+            const orderID = "59ff64e8c90dc32b79a";
+            it('bad id', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/confirm_order')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.type.should.be.a('string');
+                    res.text.should.eql('Bad ID');
+                    done();
+                });
+            });
+        });
+        describe('Bad request status not right', function(){
+            const orderID = "5a0073d3fb218c1ff070b638";
+            it('Bad request', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/confirm_order')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.type.should.be.a('string');
+                    res.text.should.eql("Status don't right");
+                    done();
+                });
+            });
+        });
+    });
+    describe('Order paid POST /orders/:id/order_paid', function(){
+        describe('Good request', function(){
+            const orderID = "5a0073d3fb218c1ff070b638";
+            it('Good request', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/order_paid')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(200);
+                    res.type.should.be.a('string');
+                    res.text.should.eql('Change status succesfully');
+                    done();
+                });
+            });
+        });
+        describe('Bad request - bad id', function(){
+            const orderID = "59ff64e8c90dc32b79a";
+            it('bad id', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/order_paid')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.type.should.be.a('string');
+                    res.text.should.eql('Bad ID');
+                    done();
+                });
+            });
+        });
+        describe('Bad request status not right', function(){
+            const orderID = "5a0073d3fb218c1ff070b638";
+            it('Bad request', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/order_paid')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.type.should.be.a('string');
+                    res.text.should.eql("Status don't right");
+                    done();
+                });
+            });
+        });
+    });
+    describe('Completed order POST /orders/:id/completed_order', function(){
+        describe('Good request', function(){
+            const orderID = "5a0073d3fb218c1ff070b638";
+            it('Good request', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/completed_order')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(200);
+                    res.type.should.be.a('string');
+                    res.text.should.eql('Change status succesfully');
+                    done();
+                });
+            });
+        });
+        describe('Bad request - bad id', function(){
+            const orderID = "59ff64e8c90dc32b79a";
+            it('bad id', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/completed_order')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.type.should.be.a('string');
+                    res.text.should.eql('Bad ID');
+                    done();
+                });
+            });
+        });
+        describe('Bad request status not right', function(){
+            const orderID = "5a0073d3fb218c1ff070b638";
+            it('Bad request', function(done){
+                chai.request(server)
+                .post('/orders/'+orderID+'/completed_order')
+                .send(null)
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.type.should.be.a('string');
+                    res.text.should.eql("Status don't right");
+                    done();
+                });
+            });
+        });
+    });
+
+
 });
