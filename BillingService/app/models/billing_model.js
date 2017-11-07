@@ -14,14 +14,14 @@ BillingSchema.virtual('date')
 BillingSchema.statics.getBillingRecord = function(id, callback){
   if (!id || typeof(id) == 'undefined' || id.length == 0)
     return callback('ID is undefined', null);
-  this.getById(id, function(err, record){
+  this.findById(id, function(err, record){
     if (err) {
       return callback(err, null);
     } else {
       if (record){
         return callback(null,getBillingRecordInfo(record));
       } else {
-        return (null, null);
+        return callback(null, null);
       }
     }
   });
