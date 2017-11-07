@@ -59,19 +59,19 @@ function getBillingRecordInfo(record){
 }
 
 function createBillingRecordInfo(object){
-  const model = mongoose('Billing');
+  const model = mongoose.model('Billing');
   let record = new model();
   const keys = Object.keys(object);
-  for (key in keys){
-    switch(key.toLowerCase()){
+  for (let I = 0; I < keys.length; I++){
+    switch(keys[I].toLowerCase()){
       case 'paysystem'  : 
-        record.PaySystem = object[key];
+        record.PaySystem = object[keys[I]];
         break;
       case 'account'    :
-        record.Account = object[key];
+        record.Account = object[keys[I]];
         break;
       case 'cost'       :
-        record.Cost = object[key];
+        record.Cost = object[keys[I]];
     }
   }
   record.DateOfPayment = Date.now();
