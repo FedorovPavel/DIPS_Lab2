@@ -112,6 +112,11 @@ router.post('/:id/confirm_order', function(req, res, next){
 
 router.post('/:id/order_paid', function(req, res, next){
   const id = req.params.id;
+  const data = {
+    paySystem : req.body.paySystem,
+    account   : req.body.account,
+    cost      : req.body.cost
+  };
   if (!id || id.length == 0 || typeof(id) == 'undefined'){
     res.status(400).send('Bad request');
   } else {
@@ -125,7 +130,29 @@ router.post('/:id/order_paid', function(req, res, next){
           return next (err);
       } else {
         if (result) {
-          res.status(200).send('Change status succesfully');
+          coordinator.createBilling(data, function(err, code, response){
+            if (err){
+              // rollback
+              res.status(500).send('Service not available');
+            } else {
+              if (parseInt(code) != 200){
+                // rollback
+                res.status(500).send('Last service rejected request');
+              } else {
+                const billingId = response.id;
+                orders.attachBilling(id, billingId, function(err, resultOrder){
+                  if (err)
+                    return next(err);
+                  else {
+                    if (resultOrder)
+                      res.status(200).send('Change status succesfully');
+                    else 
+                      res.status(500).send('Ooops service died');
+                  }
+                });
+              }
+            }
+          });
         } else {
           res.status(404).send('Not found order');
         }
