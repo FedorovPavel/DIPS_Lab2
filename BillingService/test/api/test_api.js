@@ -66,3 +66,44 @@ describe('Create billing record PUT /billings/createBilling', function(){
         });
     });
 });
+describe('get billing record GET /billings/getBilling/:id', function(){
+    const correctid = '5a0210a359624c21f0f5678e';
+    const correctDate = {
+        paySystem   : "Сбербанк",
+        account     : "0000 4444 4444 0000 00",
+        cost        : "200"
+    }
+    it('Good request ', function(done){
+        chai.request(server)
+        .get('/billings/getBilling/'+correctid)
+        .end(function(err, res) {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.PaySystem.should.eql(correctDate.paySystem);
+            res.body.Account.should.eql(correctDate.account);
+            res.body.Cost.should.eql(parseInt(correctDate.cost));
+            done();
+        });
+    });
+    it('Bad request - Bad ID',function(done){
+        const incorrect_id = correctid.slice(1,-1);
+        chai.request(server)
+        .get('/billings/getBilling/'+incorrect_id)
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.type.should.be.eql('application/json');
+            done();
+        });
+    });
+    it('Bad request - not existing record',function(done){
+        const id = "5a02113fd068a927f0761e12";
+        chai.request(server)
+        .get('/billings/getBilling/'+id)
+        .end(function(err, res) {
+            res.should.have.status(404);
+            res.type.should.be.a('string');
+            res.text.should.eql('Billing not found');
+            done();
+        });
+    });
+});
