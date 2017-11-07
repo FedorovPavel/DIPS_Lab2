@@ -7,10 +7,10 @@ module.exports = function(app) {
   app.use('/billings', router);
 };
 
-router.put('/createBilling/', function(req, res, next) {
+router.put('/createBilling', function(req, res, next) {
   const param = {
     PaySystem : req.body.paySystem,
-    Account   : req.body.Account,
+    Account   : req.body.account,
     Cost      : parseInt(req.body.cost)
   };
   if (typeof(param.Account)   == 'undefined'  || !param.Account   || param.Account.length   == 0  ||
