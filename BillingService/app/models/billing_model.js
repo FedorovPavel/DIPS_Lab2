@@ -30,13 +30,14 @@ BillingSchema.statics.getBillingRecord = function(id, callback){
 BillingSchema.statics.createBillingRecord = function(object, callback){
   if (!object || typeof(object) == 'undefined' || typeof(object) != 'object')
     return callback('Params is undefined', null);
-  let record = createBillingRecord(object);
+  let record = createBillingRecordInfo(object);
   return record.save(function(err, result){
     if(err)
       return callback(err, null);
     else {
       if (result){
-        return callback(null, result);
+        let res = getBillingRecordInfo(result);
+        return callback(null, res);
       } else {
         return callback('Not saved', null);
       }
@@ -57,7 +58,7 @@ function getBillingRecordInfo(record){
   return item;
 }
 
-function createBillingRecord(object){
+function createBillingRecordInfo(object){
   const model = mongoose('Billing');
   let record = new model();
   const keys = Object.keys(object);
