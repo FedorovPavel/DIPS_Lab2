@@ -162,6 +162,25 @@ OrderSchema.statics.setCompletedStatus = function(id, callback){
   }
 };
 
+OrderSchema.statics.attachBilling = function(order_id, billing_id, callback){
+  if (order_id && billing_id){
+    this.findByIdAndUpdate(id,{$set:{BillingID:billing_id}}, function(err, result){
+      if (err)
+        callback(err, null);
+      else {
+        if (result){
+          const res = getOrder(result);
+          callback(null, res);
+        } else {
+          callback(null, null);
+        }
+      }
+    })
+  } else {
+    return callback('Bad params', null);
+  }
+}
+
 function createOrder(object){
   const model = mongoose.model('Order');
   let item = new model();
