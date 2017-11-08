@@ -86,3 +86,52 @@ describe('Get order GET /orders/getOrder/:id', function(){
         });
     });
 });
+describe('Order paid POST /orders/:id/order_paid', function(){
+    describe('Good request', function(){
+        const orderID = "59ff6b3121e309280c85499f";
+        const data = {
+            paySystem   : 'Тинькоф',
+            account     : '1234 4444 5566 8989 00',
+            cost        : '300'
+        }
+        it('Good request', function(done){
+            chai.request(server)
+            .post('/orders/'+orderID+'/order_paid')
+            .send(data)
+            .end(function(err, res) {
+                res.should.have.status(200);
+                res.type.should.be.a('string');
+                res.text.should.eql('Change status succesfully');
+                done();
+            });
+        });
+    });
+    describe('Bad request - bad id', function(){
+        const orderID = "59ff64e8c90dc32b79a";
+        it('bad id', function(done){
+            chai.request(server)
+            .post('/orders/'+orderID+'/order_paid')
+            .send(null)
+            .end(function(err, res) {
+                res.should.have.status(400);
+                res.type.should.be.a('string');
+                res.text.should.eql('Bad ID');
+                done();
+            });
+        });
+    });
+    describe('Bad request status not right', function(){
+        const orderID = "5a0072a93fe4850db4e59303";
+        it('Bad request', function(done){
+            chai.request(server)
+            .post('/orders/'+orderID+'/order_paid')
+            .send(null)
+            .end(function(err, res) {
+                res.should.have.status(400);
+                res.type.should.be.a('string');
+                res.text.should.eql("Status don't right");
+                done();
+            });
+        });
+    });
+});
