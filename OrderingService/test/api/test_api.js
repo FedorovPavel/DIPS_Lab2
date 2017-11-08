@@ -130,7 +130,7 @@ describe('Order-api controller', function(){
     });
     describe('Confirm order POST /:id/confirm_order', function(){
         describe('Good request', function(){
-            const orderID = "5a0073d3fb218c1ff070b638";
+            const orderID = "59ff6b3121e309280c85499f";
             it('Good request', function(done){
                 chai.request(server)
                 .post('/orders/'+orderID+'/confirm_order')
@@ -158,7 +158,7 @@ describe('Order-api controller', function(){
             });
         });
         describe('Bad request status not right', function(){
-            const orderID = "5a0073d3fb218c1ff070b638";
+            const orderID = "5a0072e23af9aa0d0c50c6e9";
             it('Bad request', function(done){
                 chai.request(server)
                 .post('/orders/'+orderID+'/confirm_order')
@@ -174,11 +174,16 @@ describe('Order-api controller', function(){
     });
     describe('Order paid POST /orders/:id/order_paid', function(){
         describe('Good request', function(){
-            const orderID = "5a0073d3fb218c1ff070b638";
+            const orderID = "59ff6b3121e309280c85499f";
+            const data = {
+                paySystem   : 'Тинькоф',
+                account     : '1234 4444 5566 8989 00',
+                cost        : '300'
+            }
             it('Good request', function(done){
                 chai.request(server)
                 .post('/orders/'+orderID+'/order_paid')
-                .send(null)
+                .send(data)
                 .end(function(err, res) {
                     res.should.have.status(200);
                     res.type.should.be.a('string');
@@ -202,7 +207,7 @@ describe('Order-api controller', function(){
             });
         });
         describe('Bad request status not right', function(){
-            const orderID = "5a0073d3fb218c1ff070b638";
+            const orderID = "5a0072a93fe4850db4e59303";
             it('Bad request', function(done){
                 chai.request(server)
                 .post('/orders/'+orderID+'/order_paid')
@@ -218,7 +223,7 @@ describe('Order-api controller', function(){
     });
     describe('Completed order POST /orders/:id/completed_order', function(){
         describe('Good request', function(){
-            const orderID = "5a0073d3fb218c1ff070b638";
+            const orderID = "59ff6b3121e309280c85499f";
             it('Good request', function(done){
                 chai.request(server)
                 .post('/orders/'+orderID+'/completed_order')
@@ -260,6 +265,4 @@ describe('Order-api controller', function(){
             });
         });
     });
-
-
 });

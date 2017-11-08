@@ -1,8 +1,9 @@
 module.exports = {
     getCar : function(id, callback){
-        const url       = '/catalog/get_car/' + id;
-        const options   = createOptions('127.0.0.1', 3004, url, 'GET');
-        createAndSendHttpRequest(url, options,null,function(err, status, response){
+        const host      = 'http://127.0.0.1:3004'
+        const url       = host+'/catalog/get_car/' + id;
+        const options   = createOptions(url, 'GET');
+        createAndSendGetHttpRequest(url, options,null,function(err, status, response){
             if(err)       
                 callback(err, status, response);
             else {
@@ -16,10 +17,31 @@ module.exports = {
         });
     },
     createBilling : function(data, callback){
-        const url       = '/billings/createBilling';
-        const jsonData  = data;
-        const options   = createOptions('127.0.0.1', 3003, url, 'PUT');
-        createAndSendHttpRequest(url, options, data, function(err, status, response){
+        const host      = 'http://127.0.0.1:3003';
+        const url       = host + '/billings/createBilling';
+        const options   = createOptions(url, 'PUT');
+        createAndSendHttpPutWithFormRequest(url, options, data, function(err, status, response){
+            if(err)       
+                callback(err, status, response);
+            else {
+                if (status.statusCode == 200){
+                    if (response){
+                        const object = JSON.parse(response);
+                        callback(err, status.statusCode, object);
+                    } else {
+                        callback(err, status.statusCode, null);
+                    }
+                } else {
+                    callback(response, status.statusCode, null);
+                }
+            }
+        });
+    },
+    getBilling : function(id, callback){
+        const host      = 'http://127.0.0.1:3003';
+        const url       = host + '/billings/getBilling/'+id;
+        const options   = createOptions(url, 'GET');
+        createAndSendGetHttpRequest(url, options,null, function(err, status, response){
             if(err)       
                 callback(err, status, response);
             else {
@@ -37,41 +59,32 @@ module.exports = {
         });
     }
 }
-
-function createAndSendHttpRequest(uri, options, data, callback){
+function createAndSendHttpPutWithFormRequest(uri, options , data, callback){
     const request = require('request');
     request.put(options.url,options, function(errors, response, body){
-        callback(errors, response, body);
+        if (errors){
+            callback(err, null, null);
+        } else {
+            callback(null, response, body);
+        }
     }).form(data);
 }
 
-// function createAndSendHttpRequest(options, path, data, callback){
-//     var http    = require('http');
-//     var request = http.request(options, function(res){
-//         var raw_data_from_service = '';
+function createAndSendGetHttpRequest(uri, options, data, callback){
+    const request = require('request');
+    request.get(uri, options, function(errors, response, body){
+        if(errors) {
+            callback(errors, null, null);
+        } else {
+            callback(null, response.statusCode, body);
+        }
+    });
+}
 
-//         res.on('data', function(chunk){
-//             raw_data_from_service += chunk;
-//         });
-        
-//         res.on('end', function(){
-//             callback(null, res.statusCode, raw_data_from_service);
-//         });
-
-//         res.on('error', function(err){
-//             callback(err, res.statusCode, null);
-//         });
-//     });
-//     if (data) {
-//         request.write(data);
-//     }
-//     request.end();
-// }
-
-function createOptions(host, port, path, method){
+function createOptions(uri, method){
     let item = {
         method  : method,
-        uri     : 'http://'+host+':'+port+path,
-    }
+        uri     : uri,
+    };
     return item;
 }

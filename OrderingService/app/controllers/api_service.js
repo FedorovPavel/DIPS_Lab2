@@ -40,7 +40,22 @@ router.get('/getOrders/:id/page/:page/count/:count', function(req, res, next){
               } else {
                 result[I].Car = undefined;
               }
-              loop++;
+              if (result[I].BillingID){
+                coordinator.getBilling(orders[I].BillingID, function(err, code, response){
+                  delete result[I].BillingID;
+                  if (code == 200){
+                    result[I].Billing = response;
+                  } else {
+                    result[I].Billing = undefined;
+                  }
+                  loop++;
+                  if (loop == orders.length){
+                    res.status(200).send(result);
+                  }
+                });
+              } else {
+                loop++;
+              }
               if (loop == orders.length){
                 res.status(200).send(result);
               }
@@ -74,7 +89,15 @@ router.get('/getOrder/:id', function(req, res, next) {
             } else {
               order.Car = undefined;
             }
-            res.status(200).send(order);
+            coordinator.getBilling(order.BillingID, function(err, code, response){
+              delete order.BillingID;
+              if (code == 200){
+                order.Billing = response;
+              } else {
+                order.Billing = undefined;
+              }
+              res.status(200).send(order);
+            });
           });
         } else {
           res.status(404).send("Order isn't found");

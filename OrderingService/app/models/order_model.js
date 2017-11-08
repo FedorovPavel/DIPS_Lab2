@@ -22,7 +22,7 @@ OrderSchema.statics.getOrders = function(user_id, page, count, callback){
       count <= 0  || typeof(count)    == 'undefined'){
       return callback('user ID is undefined', null);
   } else {
-    this.find({'UserID' : user_id}, function(err, orders){
+    return this.find({'UserID' : user_id}, function(err, orders){
       if (err)
         return callback(err, null);
       else {
@@ -42,13 +42,13 @@ OrderSchema.statics.getOrders = function(user_id, page, count, callback){
 };
 
 OrderSchema.statics.getOrder = function(id, callback){
-  this.findById(id, function(err, result){
+  return this.findById(id, function(err, result){
     if (err)
       return callback(err, null);
     else {
       if (result) {
         let order = getOrder(result);
-        return callback(null, result);
+        return callback(null, order);
       } else {
         return callback(null, null);
       }
@@ -62,7 +62,7 @@ OrderSchema.statics.createOrder = function(objectInfo, callback){
   if (check){
     let order = createOrder(object);
     if (order){
-      order.save(function(err, result){
+      return order.save(function(err, result){
         if (err)
           return callback(err, null);
         else {
@@ -82,7 +82,7 @@ OrderSchema.statics.setWaitStatus = function(id, callback){
   if (!id || id.length == 0 || typeof(id) == 'undefined'){
     return callback('ID is undefined', null);
   } else {
-    this.findById(id, function(err, order){
+    return this.findById(id, function(err, order){
       if (err)
         return callback(err, null);
       else {
@@ -110,7 +110,7 @@ OrderSchema.statics.setPaidStatus = function(id, callback){
   if (!id || id.length == 0 || typeof(id) == 'undefined'){
     return callback('ID is undefined', null);
   } else {
-    this.findById(id, function(err, order){
+    return this.findById(id, function(err, order){
       if (err)
         return callback(err, null);
       else {
@@ -138,7 +138,7 @@ OrderSchema.statics.setCompletedStatus = function(id, callback){
   if (!id || id.length == 0 || typeof(id) == 'undefined'){
     return callback('ID is undefined', null);
   } else {
-    this.findById(id, function(err, order){
+    return this.findById(id, function(err, order){
       if (err)
         return callback(err, null);
       else {
@@ -164,15 +164,15 @@ OrderSchema.statics.setCompletedStatus = function(id, callback){
 
 OrderSchema.statics.attachBilling = function(order_id, billing_id, callback){
   if (order_id && billing_id){
-    this.findByIdAndUpdate(id,{$set:{BillingID:billing_id}}, function(err, result){
+    return this.findByIdAndUpdate(order_id,{$set:{BillingID:billing_id}}, function(err, result){
       if (err)
-        callback(err, null);
+        return callback(err, null);
       else {
         if (result){
           const res = getOrder(result);
-          callback(null, res);
+          return callback(null, res);
         } else {
-          callback(null, null);
+          return callback(null, null);
         }
       }
     })
