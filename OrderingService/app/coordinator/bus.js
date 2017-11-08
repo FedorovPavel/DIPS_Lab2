@@ -1,8 +1,8 @@
 module.exports = {
     getCar : function(id, callback){
         const url       = '/catalog/get_car/' + id;
-        const options   = createGetOptions('127.0.0.1', 3004, url, null);
-        createAndSendHttpRequest(options, url, null, function(err, status, response){
+        const options   = createOptions('127.0.0.1', 3004, url, 'GET');
+        createAndSendHttpRequest(url, options,null,function(err, status, response){
             if(err)       
                 callback(err, status, response);
             else {
@@ -14,43 +14,64 @@ module.exports = {
                 }
             }
         });
+    },
+    createBilling : function(data, callback){
+        const url       = '/billings/createBilling';
+        const jsonData  = data;
+        const options   = createOptions('127.0.0.1', 3003, url, 'PUT');
+        createAndSendHttpRequest(url, options, data, function(err, status, response){
+            if(err)       
+                callback(err, status, response);
+            else {
+                if (status == 200){
+                    if (response){
+                        const object = JSON.parse(response);
+                        callback(err, status, object);
+                    } else {
+                        callback(err, status, null);
+                    }
+                } else {
+                    callback(response, status, null);
+                }
+            }
+        });
     }
 }
 
-function createAndSendHttpRequest(options, path, data, callback){
-    var http    = require('http');
-    var request = http.request(options, function(res){
-        var raw_data_from_service = '';
+function createAndSendHttpRequest(uri, options, data, callback){
+    const request = require('request');
+    request.put(options.url,options, function(errors, response, body){
+        callback(errors, response, body);
+    }).form(data);
+}
 
-        res.on('data', function(chunk){
-            raw_data_from_service += chunk;
-        });
+// function createAndSendHttpRequest(options, path, data, callback){
+//     var http    = require('http');
+//     var request = http.request(options, function(res){
+//         var raw_data_from_service = '';
+
+//         res.on('data', function(chunk){
+//             raw_data_from_service += chunk;
+//         });
         
-        res.on('end', function(){
-            callback(null, res.statusCode, raw_data_from_service);
-        });
+//         res.on('end', function(){
+//             callback(null, res.statusCode, raw_data_from_service);
+//         });
 
-        res.on('error', function(err){
-            callback(err, res.statusCode, null);
-        });
-    });
-    if (data) {
-        request.write(data);
-    }
-    request.end();
-}
+//         res.on('error', function(err){
+//             callback(err, res.statusCode, null);
+//         });
+//     });
+//     if (data) {
+//         request.write(data);
+//     }
+//     request.end();
+// }
 
-function createGetOptions(host, port, path, headers_options){
+function createOptions(host, port, path, method){
     let item = {
-        host    : host,
-        port    : port,
-        path    : path,
-        method  : 'GET',
-    }
-    if (headers_options){
-        for (let I = 0; I < headers_options.length; I++) {
-            item.headers[headers_options[I].key] = headers_options[I].value;
-        }
+        method  : method,
+        uri     : 'http://'+host+':'+port+path,
     }
     return item;
 }
