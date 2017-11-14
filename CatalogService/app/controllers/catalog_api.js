@@ -1,46 +1,49 @@
 var express   = require('express'),
     router    = express.Router(),
     mongoose  = require('mongoose'),
-    catalog   = mongoose.model('Car');
+    catalog   = mongoose.model('Car'),
+    validator = require('./../validator/validator');
 
 module.exports = function (app) {
   app.use('/catalog', router);
 };
 
-
 //  get cars
-router.get('/get_cars/page/:page/count/:count', function(req, res, next){
-  const page  = parseInt(req.params.page);
-  const count = parseInt(req.params.count);
-  if (page < 0 || isNaN(page) || count < 0 || isNaN(count)){
-    res.status(400).send('Bad request');
+router.get('/',function(req, res, next){
+  let page  = validator.checkIntNumber(req.query.page);
+  let count = validator.checkIntNumber(req.query.count);
+  page  = (typeof(page)   != 'undefined') ? page  : 0;
+  count = (typeof(count)  != 'undefined') ? count : 20;
+  catalog.getCars(page, count, function(err ,result){
+    if (err)
+      res.status(400).send({status : 'Error', message : err});
+    else {
+      res.status(200).send(result);
+    }
+  });
+});
+
+// get car
+router.get('/:id', function(req, res, next){
+  const id = req.params.id;
+  if (!id || id.length == 0 || typeof(id) == 'undefined') {
+    res.status(400).send({status : 'Error', message : 'Bad request: id is undefined'});
   } else {
-    catalog.getCars(Number(page), Number(count), function(err ,result){
-      if (err)
-        return next(err);
-      else {
+    catalog.getCar(id, function(err, result){
+      if (err) {
+        if (err.kind == "ObjectID")
+          res.status(400).send({status:'Error', message : 'Bad request: Invalid ID'});
+        else 
+          res.status(400).send({status:'Error', message : 'Car not found'});
+      } else {
         res.status(200).send(result);
       }
     });
   }
 });
 
-router.get('/get_car/:id', function(req, res, next){
-  const id = req.params.id;
-  if (!id || id.length == 0 || typeof(id) == 'undefined') {
-    res.status(400).send('Bad request');
-  } else {
-    catalog.getCar(id, function(err, result){
-      if (err) {
-        if (err.kind == "ObjectID")
-          res.status(400).send({status:'Error', message : 'Invalid ID'});
-        else 
-          res.status(400).send({status:'Error', message : 'Not found'});
-      } else {
-        res.status(200).send(result);
-      }
-    });
-  }
+router.options('/live',function(req, res, next){
+  res.status(200).send(null);
 });
 
 /*
