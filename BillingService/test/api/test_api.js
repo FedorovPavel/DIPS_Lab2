@@ -7,7 +7,7 @@ var chai        = require('chai'),
 
 chai.use(chaiHttp);
 
-describe('Create billing record PUT /billings/createBilling', function(){
+describe('Create billing record PUT /billings/', function(){
     const correctDate = {
         paySystem   : "Сбербанк",
         account     : "0000 4444 4444 0000 00",
@@ -15,7 +15,7 @@ describe('Create billing record PUT /billings/createBilling', function(){
     }
     it('Good request ', function(done){
         chai.request(server)
-        .put('/billings/createBilling')
+        .post('/billings/')
         .send(correctDate)
         .end(function(err, res) {
             res.should.have.status(200);
@@ -30,12 +30,12 @@ describe('Create billing record PUT /billings/createBilling', function(){
         let incorrectData = correctDate;
         delete incorrectData.paySystem;
         chai.request(server)
-        .put('/billings/createBilling')
+        .post('/billings/')
         .send(correctDate)
         .end(function(err, res) {
             res.should.have.status(400);
-            res.type.should.be.a('string');
-            res.text.should.eql('Bad request');
+            res.body.should.be.a('object');
+            res.body.status.should.eql('Error');
             done();
         });
     });
@@ -43,12 +43,12 @@ describe('Create billing record PUT /billings/createBilling', function(){
         let incorrectData = correctDate;
         delete incorrectData.account;
         chai.request(server)
-        .put('/billings/createBilling')
+        .post('/billings/')
         .send(correctDate)
         .end(function(err, res) {
             res.should.have.status(400);
-            res.type.should.be.a('string');
-            res.text.should.eql('Bad request');
+            res.body.should.be.a('object');
+            res.body.status.should.eql('Error');
             done();
         });
     });
@@ -56,17 +56,18 @@ describe('Create billing record PUT /billings/createBilling', function(){
         let incorrectData = correctDate;
         delete incorrectData.cost;
         chai.request(server)
-        .put('/billings/createBilling')
+        .post('/billings/')
         .send(correctDate)
         .end(function(err, res) {
             res.should.have.status(400);
-            res.type.should.be.a('string');
-            res.text.should.eql('Bad request');
+            res.body.should.be.a('object');
+            res.body.status.should.eql('Error');
             done();
         });
     });
 });
-describe('get billing record GET /billings/getBilling/:id', function(){
+
+describe('get billing record GET /billings/:id', function(){
     const correctid = '5a0210a359624c21f0f5678e';
     const correctDate = {
         paySystem   : "Сбербанк",
@@ -75,7 +76,7 @@ describe('get billing record GET /billings/getBilling/:id', function(){
     }
     it('Good request ', function(done){
         chai.request(server)
-        .get('/billings/getBilling/'+correctid)
+        .get('/billings/'+correctid)
         .end(function(err, res) {
             res.should.have.status(200);
             res.body.should.be.a('object');
@@ -88,22 +89,34 @@ describe('get billing record GET /billings/getBilling/:id', function(){
     it('Bad request - Bad ID',function(done){
         const incorrect_id = correctid.slice(1,-1);
         chai.request(server)
-        .get('/billings/getBilling/'+incorrect_id)
+        .get('/billings/'+incorrect_id)
         .end(function(err, res) {
             res.should.have.status(400);
-            res.type.should.be.eql('application/json');
+            res.body.should.be.a('object');
+            res.body.status.should.eql('Error');
             done();
         });
     });
     it('Bad request - not existing record',function(done){
         const id = "5a02113fd068a927f0761e12";
         chai.request(server)
-        .get('/billings/getBilling/'+id)
+        .get('/billings/'+id)
         .end(function(err, res) {
             res.should.have.status(404);
-            res.type.should.be.a('string');
-            res.text.should.eql('Billing not found');
+            res.body.should.be.a('object');
+            res.body.status.should.eql('Error');
             done();
         });
     });
 });
+
+describe('Check live channel', function(){
+    it('check', function(done){
+        chai.request(server)
+        .options('/billings/live')
+        .end(function(err, res) {
+            res.should.have.status(200);
+            done();
+        });
+    })
+})
