@@ -98,32 +98,10 @@ router.post('/paid_order/:id', function(req, res, next){
         else 
           return next (err);
       } else {
-        if (result) {
-          coordinator.createBilling(data, function(err, code, response){
-            if (err){
-              // rollback
-              res.status(500).send('Service not available');
-            } else {
-              if (parseInt(code) != 200){
-                // rollback
-                res.status(500).send('Last service rejected request');
-              } else {
-                const billingId = response.id;
-                orders.attachBilling(id, billingId, function(err, resultOrder){
-                  if (err)
-                    return next(err);
-                  else {
-                    if (resultOrder)
-                      res.status(200).send('Change status succesfully');
-                    else 
-                      res.status(500).send('Ooops service died');
-                  }
-                });
-              }
-            }
-          });
+        if (result) {              
+          res.status(200).send(result);
         } else {
-          res.status(404).send('Not found order');
+          res.status(404).send('Order not found');
         }
       }
     });
@@ -172,7 +150,7 @@ router.put('/createOrder', function(req, res, next){
         return next(err);
       else {
         if (result) {
-          res.status(200).send(result);
+          res.status(201).send(result);
         } else {
           res.status(500).send('Oooops');
         }
@@ -180,36 +158,3 @@ router.put('/createOrder', function(req, res, next){
     });
   }
 });
-
-/*let result = [];
-        let loop = 0;
-          for (let I = 0; I < orders.length; I++){
-            result[I] = orders[I];
-            coordinator.getCar(orders[I].CarID, function(err ,code , response){
-              delete result[I].CarID;
-              if (code == 200){
-                result[I].Car = response;
-              } else {
-                result[I].Car = undefined;
-              }
-              if (result[I].BillingID){
-                coordinator.getBilling(orders[I].BillingID, function(err, code, response){
-                  delete result[I].BillingID;
-                  if (code == 200){
-                    result[I].Billing = response;
-                  } else {
-                    result[I].Billing = undefined;
-                  }
-                  loop++;
-                  if (loop == orders.length){
-                    res.status(200).send(result);
-                  }
-                });
-              } else {
-                loop++;
-              }
-              if (loop == orders.length){
-                res.status(200).send(result);
-              }
-            });
-          } */
