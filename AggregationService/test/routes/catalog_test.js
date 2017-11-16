@@ -99,7 +99,6 @@ describe('Unit test with CatalogService', function(){
                 .end(function(err, res) {
                     res.should.have.status(400);
                     res.body.should.be.a('object');
-                    res.body.status.should.eql('Error');
                     done();
                 });
             });
